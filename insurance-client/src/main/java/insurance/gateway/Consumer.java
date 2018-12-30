@@ -7,10 +7,10 @@ import javax.naming.NamingException;
 import java.util.Properties;
 
 /**
- * A class that is responsible for creating JMS messages
- * and sending them to a set JMS message queue
+ * A class that is responsible for consuming
+ * messages send to a set JMS message queue
  */
-public class Producer {
+public class Consumer {
 
     /**
      * String that holds the JMS provider url
@@ -25,17 +25,17 @@ public class Producer {
     private Connection connection;
     private Session session;
     private Destination destination;
-    private MessageProducer producer;
+    private MessageConsumer consumer;
 
     /**
      * Constructor that initializes the connection,
-     * the session, the destination and the producer
+     * the session, the destination and the consumer
      * for a given queue name
      *
      * @param queueName String that holds the queue name of the queue
-     *                  which the Producer is going to communicate with
+     *                  from which the Consumer is going to consume messages
      */
-    public Producer(String queueName) {
+    public Consumer(String queueName) {
         try {
             // set properties
             Properties props = new Properties();
@@ -44,43 +44,32 @@ public class Producer {
             props.setProperty(Context.PROVIDER_URL, JMS_PROVIDER_URL);
             props.put(("queue." + queueName), queueName);
 
-            // initialize connection and session
+            // create connection and session
             Context jndiContext = new InitialContext(props);
             ConnectionFactory connectionFactory = (ConnectionFactory) jndiContext
                     .lookup("ConnectionFactory");
             this.connection = connectionFactory.createConnection();
-            this.session = this.connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            this.session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
-            // initialize destination and producer
+            // create clientDestination and consumer
             this.destination = (Destination) jndiContext.lookup(queueName);
-            this.producer = session.createProducer(this.destination);
+            this.consumer = session.createConsumer(this.destination);
+
+            // start connection
+            this.connection.start();
         } catch (JMSException | NamingException e) {
             e.printStackTrace();
         }
     }
 
     /**
-     * Method that creates the JMS message
-     * containing a given message body
+     * A method that sets in the consumer a message listener
+     * that is going to handle messages when they arrive
      *
-     * @param messageBody String contents to be wrapped with a JMS message
-     * @return Message object containing the message body
+     * @param messageListener the message listener to be set
      * @throws JMSException if something goes wrong with JMS
      */
-    public Message createMessage(String messageBody) throws JMSException {
-        return this.session.createTextMessage(messageBody);
-    }
-
-    /**
-     * Method that sends a given message to the
-     * queue destination initialized in the constructor
-     *
-     * @param message to be send
-     * @return String the ID of the message send
-     * @throws JMSException if something goes wrong with JMS
-     */
-    public String sendMessage(Message message) throws JMSException {
-        this.producer.send(message);
-        return message.getJMSMessageID();
+    public void setConsumerMessageListener(MessageListener messageListener) throws JMSException {
+        this.consumer.setMessageListener(messageListener);
     }
 }
