@@ -13,7 +13,7 @@ import java.util.Map;
  * A class that is responsible for delegating
  * production and consumption of JSM messages
  */
-public class Gateway {
+public class InsuranceClientGateway {
 
     /**
      * Declare Consumer and Producer to delegate
@@ -41,7 +41,7 @@ public class Gateway {
      * @param consumerQueueName the queue name for initializing the consumer
      * @throws JMSException if something goes wrong with JMS
      */
-    public Gateway(String producerQueueName, String consumerQueueName) throws JMSException{
+    public InsuranceClientGateway(String producerQueueName, String consumerQueueName) throws JMSException{
         this.producer = new Producer(producerQueueName);
         this.consumer = new Consumer(consumerQueueName);
         this.treatmentSerializer = new TreatmentSerializer();

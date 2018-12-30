@@ -1,17 +1,27 @@
 package insurance.application;
 
+import insurance.gateway.InsuranceClientGateway;
 import insurance.model.TreatmentCostsReply;
 import insurance.model.TreatmentCostsRequest;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
+import javax.jms.JMSException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class InsuranceClientController implements Initializable {
+    /**
+     * Store the queue names for both broker client queue
+     * and for this insurance client queue
+     */
+    private static final String JMS_INSURANCE_CLIENT_QUEUE_NAME = "insurance-client-queue";
+    private static final String JMS_BROKER_CLIENT_QUEUE_NAME = "broker-client-queue";
+
     @FXML
     private ListView<ClientListLine> lvRequestsReplies;
     @FXML
@@ -25,6 +35,10 @@ public class InsuranceClientController implements Initializable {
     @FXML
     private TextField tfKilometers;
 
+    /**
+     * Declare the InsuranceClientGateway
+     */
+    private InsuranceClientGateway insuranceClientGateway;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -33,6 +47,21 @@ public class InsuranceClientController implements Initializable {
         tfTreatmentCode.setText("ORT125");
         cbTransport.setSelected(false);
         tfKilometers.setDisable(true);
+
+        try {
+            this.insuranceClientGateway = new InsuranceClientGateway(
+                    JMS_BROKER_CLIENT_QUEUE_NAME,
+                    JMS_INSURANCE_CLIENT_QUEUE_NAME) {
+                public void onTreatmentCostReplyArrived(
+                        TreatmentCostsRequest treatmentCostsRequest,
+                        TreatmentCostsReply treatmentCostsReply
+                ) {
+                    //todo: implement callback
+                }
+            };
+        } catch (JMSException e) {
+            e.printStackTrace();
+        }
     }
 
     private ClientListLine getListLine(TreatmentCostsRequest request) {
@@ -63,6 +92,29 @@ public class InsuranceClientController implements Initializable {
         }
 
         TreatmentCostsRequest request = new TreatmentCostsRequest(ssn, age, treatmentCode, transportDistance);
-        //... send request
+
+        // request a cost approximation
+        try {
+            this.insuranceClientGateway.requestTreatmentCostApproximation(request);
+        } catch (JMSException e) {
+            e.printStackTrace();
+        }
+
+        // create ClientListLine and add to ListView
+        ClientListLine clientListLine = new ClientListLine(request, null);
+        this.addClientListLineToListViewLine(clientListLine);
+    }
+
+    /**
+     * Method that adds ClientListLine to the lvRequestsReplied,
+     * but first removing the old instance if necessary
+     *
+     * @param clientListLine to be added to lvRequestsReplied
+     */
+    public void addClientListLineToListViewLine(ClientListLine clientListLine) {
+        Platform.runLater(() -> {
+            this.lvRequestsReplies.getItems().remove(clientListLine);
+            this.lvRequestsReplies.getItems().add(clientListLine);
+        });
     }
 }
