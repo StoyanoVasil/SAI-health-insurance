@@ -12,6 +12,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="broker_main" options="--add-modules=javafx.graphics,javafx.base,javafx.fxml" />
       <module name="hospital_main" options="--add-modules=javafx.graphics,javafx.fxml,javafx.base" />
+      <module name="insurance-client_main" options="--add-modules=javafx.fxml,javafx.controls,javafx.graphics,javafx.base" />
     </option>
   </component>
 </project>

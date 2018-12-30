@@ -20,12 +20,9 @@ public class InsuranceClientMain extends Application {
             Parent root = FXMLLoader.load(url);
             primaryStage.setTitle("Hospital Treatment Client");
             primaryStage.setScene(new Scene(root, 473, 384));
-            primaryStage.setOnCloseRequest(new EventHandler<>() {
-                @Override
-                public void handle(WindowEvent t) {
-                    Platform.exit();
-                    System.exit(0);
-                }
+            primaryStage.setOnCloseRequest(t -> {
+                Platform.exit();
+                System.exit(0);
             });
 
             primaryStage.show();
