@@ -76,11 +76,9 @@ public class Producer {
      * queue destination initialized in the constructor
      *
      * @param message to be send
-     * @return String the ID of the message send
      * @throws JMSException if something goes wrong with JMS
      */
-    public String sendMessage(Message message) throws JMSException {
+    public void sendMessage(Message message) throws JMSException {
         this.producer.send(message);
-        return message.getJMSMessageID();
     }
 }
