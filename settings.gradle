@@ -1,0 +1,6 @@
+rootProject.name = 'sai-health-insurance'
+
+include 'insurance-client'
+include 'hospital'
+include 'broker'
+

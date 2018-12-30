@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="messaging_main" target="1.10" />
+      <module name="messaging_test" target="1.10" />
+      <module name="transport-price_main" target="1.10" />
+      <module name="transport-price_test" target="1.10" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="broker_main" options="--add-modules=javafx.graphics,javafx.base,javafx.fxml" />
+      <module name="hospital_main" options="--add-modules=javafx.graphics,javafx.fxml,javafx.base" />
+    </option>
+  </component>
+</project>
