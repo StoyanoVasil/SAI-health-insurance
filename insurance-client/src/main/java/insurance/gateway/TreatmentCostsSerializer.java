@@ -5,7 +5,7 @@ import insurance.model.TreatmentCostsReply;
 import insurance.model.TreatmentCostsRequest;
 
 /**
- * A class that is responsible for serializing to a JSON sting and
+ * A class that is responsible for serializing to a JSON string and
  * deserializing  from a JSON string TreatmentCostsRequest and TreatmentCostsReply objects
  */
 public class TreatmentCostsSerializer {
