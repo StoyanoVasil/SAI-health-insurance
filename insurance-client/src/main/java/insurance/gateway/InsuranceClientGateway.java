@@ -23,9 +23,9 @@ public class InsuranceClientGateway {
     private Producer producer;
 
     /**
-     * Declare TreatmentSerializer for (de)serializing TreatmentCost objects
+     * Declare TreatmentCostsSerializer for (de)serializing TreatmentCost objects
      */
-    private TreatmentSerializer treatmentSerializer;
+    private TreatmentCostsSerializer treatmentCostsSerializer;
 
     /**
      * Map TreatmentCostRequest to an ID in order to distinguish which
@@ -44,7 +44,7 @@ public class InsuranceClientGateway {
     public InsuranceClientGateway(String producerQueueName, String consumerQueueName) throws JMSException{
         this.producer = new Producer(producerQueueName);
         this.consumer = new Consumer(consumerQueueName);
-        this.treatmentSerializer = new TreatmentSerializer();
+        this.treatmentCostsSerializer = new TreatmentCostsSerializer();
         this.correlationToTreatmentRequestMap = new HashMap<>();
 
         /**
@@ -57,7 +57,7 @@ public class InsuranceClientGateway {
                 TextMessage msg = (TextMessage) message;
                 // deserialize the body of the message to TreatmentCostReply
                 TreatmentCostsReply treatmentCostsReply =
-                        this.treatmentSerializer.deserializeTreatmentCostReplyJSON(msg.getText());
+                        this.treatmentCostsSerializer.deserializeTreatmentCostsReplyJSON(msg.getText());
                 // get TreatmentCostRequest mapped to the JMSCorrelationID of the message
                 TreatmentCostsRequest treatmentCostsRequest =
                         this.correlationToTreatmentRequestMap.get(msg.getJMSCorrelationID());
@@ -75,7 +75,7 @@ public class InsuranceClientGateway {
      * @throws JMSException if something goes wrong with JMS
      */
     public void requestTreatmentCostApproximation(TreatmentCostsRequest treatmentCostsRequest) throws JMSException {
-        String treatmentJson = this.treatmentSerializer.serializeTreatmentCostRequest(treatmentCostsRequest);
+        String treatmentJson = this.treatmentCostsSerializer.serializeTreatmentCostsRequest(treatmentCostsRequest);
         Message message = this.producer.createMessage(treatmentJson);
         this.producer.sendMessage(message);
         this.correlationToTreatmentRequestMap.put(message.getJMSMessageID(), treatmentCostsRequest);

@@ -57,6 +57,7 @@ public class InsuranceClientController implements Initializable {
                         TreatmentCostsReply treatmentCostsReply
                 ) {
                     //todo: implement callback
+                    //lvRequestsReplies.refresh();
                 }
             };
         } catch (JMSException e) {
@@ -106,14 +107,12 @@ public class InsuranceClientController implements Initializable {
     }
 
     /**
-     * Method that adds ClientListLine to the lvRequestsReplied,
-     * but first removing the old instance if necessary
+     * Method that adds ClientListLine to the lvRequestsReplied
      *
      * @param clientListLine to be added to lvRequestsReplied
      */
-    public void addClientListLineToListViewLine(ClientListLine clientListLine) {
+    private void addClientListLineToListViewLine(ClientListLine clientListLine) {
         Platform.runLater(() -> {
-            this.lvRequestsReplies.getItems().remove(clientListLine);
             this.lvRequestsReplies.getItems().add(clientListLine);
         });
     }
