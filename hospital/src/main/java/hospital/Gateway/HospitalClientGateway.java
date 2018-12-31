@@ -17,7 +17,7 @@ public class HospitalClientGateway {
 
     /**
      * Declare Consumer and Producer to delegate
-     * consumption and production of message respectively
+     * consumption and production of messages respectively
      */
     private Consumer consumer;
     private Producer producer;
@@ -60,14 +60,18 @@ public class HospitalClientGateway {
          */
         this.consumer.setConsumerMessageListener(message -> {
             try {
+                // typecast received message to TextMessage
                 TextMessage msg = (TextMessage) message;
+                // get the HospitalCostsRequest from the message body
                 HospitalCostsRequest hospitalCostsRequest =
                         this.hospitalCostsSerializer.deserializeHospitalCostsRequestJSON(msg.getText());
+                // map necessary information
                 this.hospitalCostsRequestToCorrelationMap.put(
                         hospitalCostsRequest,
                         msg.getJMSMessageID()
                 );
                 this.correlationToAggregationMap.put(msg.getJMSMessageID(), msg.getIntProperty("aggregationID"));
+                // push the received HospitalCostsRequest
                 onHospitalCostsRequestArrived(hospitalCostsRequest);
             } catch (JMSException e) { e.printStackTrace(); }
         });
@@ -85,12 +89,17 @@ public class HospitalClientGateway {
             HospitalCostsRequest hospitalCostsRequest,
             HospitalCostsReply hospitalCostsReply
     ) throws JMSException {
+        // serialize to JSON string the HospitalCostsReply
         String hospitalCostsReplyJSON = this.hospitalCostsSerializer.serializeHospitalCostsReply(hospitalCostsReply);
+        // create the message
         Message message = this.producer.createMessage(hospitalCostsReplyJSON);
+        // get necessary information from maps
         String correlationId = this.hospitalCostsRequestToCorrelationMap.get(hospitalCostsRequest);
         Integer aggregationId = this.correlationToAggregationMap.get(correlationId);
+        // include necessary information in message
         message.setJMSCorrelationID(correlationId);
         message.setIntProperty("aggregationID", aggregationId);
+        // send the message
         this.producer.sendMessage(message);
     }
 
