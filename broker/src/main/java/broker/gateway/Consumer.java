@@ -8,7 +8,7 @@ import java.util.Properties;
 
 /**
  * A class that is responsible for consuming
- * messages send to a set JMS message queue
+ * messages sendMessage to a set JMS message queue
  */
 public class Consumer {
 

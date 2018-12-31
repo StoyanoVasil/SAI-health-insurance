@@ -5,7 +5,7 @@ import broker.model.hospital.HospitalCostsRequest;
 import com.google.gson.Gson;
 
 /**
- * A class that is responsible for serializing to a JSON sting and
+ * A class that is responsible for serializing to a JSON string and
  * deserializing  from a JSON string HospitalCostsRequest and HospitalCostsReply objects
  */
 public class HospitalCostsSerializer {

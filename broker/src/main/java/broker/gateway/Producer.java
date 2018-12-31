@@ -32,7 +32,7 @@ public class Producer {
     /**
      * Constructor that initializes the connection,
      * the session, the destination and an empty producer
-     * that will send messages with a given queueName later on
+     * that will sendMessage messages with a given queueName later on
      */
     public Producer() {
         try {
@@ -105,10 +105,10 @@ public class Producer {
      * Method that sends a given message to the
      * queue destination initialized in the constructor
      *
-     * @param message to be send
+     * @param message to be sendMessage
      * @throws JMSException if something goes wrong with JMS
      */
-    public void send(Message message) throws JMSException {
+    public void sendMessage(Message message) throws JMSException {
         this.producer.send(message);
     }
 
@@ -117,11 +117,11 @@ public class Producer {
      * destination created from the passed as
      * a parameter queue name
      *
-     * @param message to be send
+     * @param message to be sendMessage
      * @param queueName
      * @throws JMSException if something goes wrong with JMS
      */
-    public void send(Message message, String queueName) throws JMSException {
+    public void sendMessage(Message message, String queueName) throws JMSException {
         this.producer.send(this.session.createQueue(queueName), message);
     }
 }
