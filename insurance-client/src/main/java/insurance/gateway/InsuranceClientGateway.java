@@ -17,7 +17,7 @@ public class InsuranceClientGateway {
 
     /**
      * Declare Consumer and Producer to delegate
-     * consumption and production of message respectively
+     * consumption and production of messages respectively
      */
     private Consumer consumer;
     private Producer producer;
@@ -76,9 +76,13 @@ public class InsuranceClientGateway {
      * @throws JMSException if something goes wrong with JMS
      */
     public void requestTreatmentCostApproximation(TreatmentCostsRequest treatmentCostsRequest) throws JMSException {
+        // serialize the TreatmentCostsRequest to JSON string
         String treatmentJson = this.treatmentCostsSerializer.serializeTreatmentCostsRequest(treatmentCostsRequest);
+        // create the message
         Message message = this.producer.createMessage(treatmentJson);
+        // send the message
         this.producer.sendMessage(message);
+        // save necessary information in map
         this.correlationToTreatmentRequestMap.put(message.getJMSMessageID(), treatmentCostsRequest);
     }
 

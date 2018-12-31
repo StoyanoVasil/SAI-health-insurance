@@ -107,9 +107,9 @@ public class InsuranceClientController implements Initializable {
     }
 
     /**
-     * Method that adds ClientListLine to the lvRequestsReplied
+     * Method that adds ClientListLine to the lvRequestsReplies
      *
-     * @param clientListLine to be added to lvRequestsReplied
+     * @param clientListLine to be added to lvRequestsReplies
      */
     private void addClientListLineToListViewLine(ClientListLine clientListLine) {
         Platform.runLater(() -> {
