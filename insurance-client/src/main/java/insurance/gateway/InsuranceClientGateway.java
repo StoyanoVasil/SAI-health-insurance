@@ -23,13 +23,13 @@ public class InsuranceClientGateway {
     private Producer producer;
 
     /**
-     * Declare TreatmentCostsSerializer for (de)serializing TreatmentCost objects
+     * Declare TreatmentCostsSerializer for (de)serializing TreatmentCosts objects
      */
     private TreatmentCostsSerializer treatmentCostsSerializer;
 
     /**
-     * Map TreatmentCostRequest to an ID in order to distinguish which
-     * TreatmentCostRequest corresponds to a received TreatmentCostReply
+     * Map TreatmentCostsRequest to an ID in order to distinguish which
+     * TreatmentCostsRequest corresponds to a received TreatmentCostsReply
      */
     private Map<String, TreatmentCostsRequest> correlationToTreatmentRequestMap;
 
@@ -41,37 +41,38 @@ public class InsuranceClientGateway {
      * @param consumerQueueName the queue name for initializing the consumer
      * @throws JMSException if something goes wrong with JMS
      */
-    public InsuranceClientGateway(String producerQueueName, String consumerQueueName) throws JMSException{
+    public InsuranceClientGateway(String producerQueueName, String consumerQueueName) throws JMSException {
+        // initialize all properties
         this.producer = new Producer(producerQueueName);
         this.consumer = new Consumer(consumerQueueName);
         this.treatmentCostsSerializer = new TreatmentCostsSerializer();
         this.correlationToTreatmentRequestMap = new HashMap<>();
 
-        /**
-         * Event listener that receives the JMS message, deserializes the body to TreatmentCostReply,
-         * finds corresponding TreatmentCostRequest and pushes both to parent class through a callback
+        /*
+          Event listener that receives the JMS message, deserializes the body to TreatmentCostsReply,
+          finds corresponding TreatmentCostsRequest and pushes both to parent class through a callback
          */
         this.consumer.setConsumerMessageListener(message -> {
             try {
                 // typecast message to TextMessage
                 TextMessage msg = (TextMessage) message;
-                // deserialize the body of the message to TreatmentCostReply
+                // deserialize the body of the message to TreatmentCostsReply
                 TreatmentCostsReply treatmentCostsReply =
                         this.treatmentCostsSerializer.deserializeTreatmentCostsReplyJSON(msg.getText());
-                // get TreatmentCostRequest mapped to the JMSCorrelationID of the message
+                // get TreatmentCostsRequest mapped to the JMSCorrelationID of the message
                 TreatmentCostsRequest treatmentCostsRequest =
                         this.correlationToTreatmentRequestMap.get(msg.getJMSCorrelationID());
-                // push TreatmentCostRequest and TreatmentCostReply to parent class through callback
-                onTreatmentCostReplyArrived(treatmentCostsRequest, treatmentCostsReply);
+                // push TreatmentCostsRequest and TreatmentCostsReply to parent class through callback
+                onTreatmentCostsReplyArrived(treatmentCostsRequest, treatmentCostsReply);
             } catch (JMSException e) { e.printStackTrace(); }
         });
     }
 
     /**
-     * Method that serializes a TreatmentCostRequest, creates the JMS message,
-     * sends the message and maps the JMSMessageID to the TreatmentCostRequest
+     * Method that serializes a TreatmentCostsRequest, creates the JMS message,
+     * sends the message and maps the JMSMessageID to the TreatmentCostsRequest
      *
-     * @param treatmentCostsRequest TreatmentCostRequest to be send
+     * @param treatmentCostsRequest TreatmentCostsRequest to be send
      * @throws JMSException if something goes wrong with JMS
      */
     public void requestTreatmentCostApproximation(TreatmentCostsRequest treatmentCostsRequest) throws JMSException {
@@ -84,12 +85,12 @@ public class InsuranceClientGateway {
     /**
      * This method is a callback that has to be overwritten when initializing
      * an instance of this class to be able to handle the
-     * received TreatmentCostReply with its paired TreatmentCostRequest
+     * received TreatmentCostsReply with its paired TreatmentCostsRequest
      *
-     * @param treatmentCostsRequest TreatmentCostRequest corresponding to the TreatmentCostReply
-     * @param treatmentCostsReply TreatmentCostReply received from JMS
+     * @param treatmentCostsRequest TreatmentCostsRequest corresponding to the TreatmentCostsReply
+     * @param treatmentCostsReply TreatmentCostsReply received from JMS
      */
-    public void onTreatmentCostReplyArrived(
+    public void onTreatmentCostsReplyArrived(
             TreatmentCostsRequest treatmentCostsRequest,
             TreatmentCostsReply treatmentCostsReply
     ) {}

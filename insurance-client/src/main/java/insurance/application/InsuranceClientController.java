@@ -52,7 +52,7 @@ public class InsuranceClientController implements Initializable {
             this.insuranceClientGateway = new InsuranceClientGateway(
                     JMS_BROKER_CLIENT_QUEUE_NAME,
                     JMS_INSURANCE_CLIENT_QUEUE_NAME) {
-                public void onTreatmentCostReplyArrived(
+                public void onTreatmentCostsReplyArrived(
                         TreatmentCostsRequest treatmentCostsRequest,
                         TreatmentCostsReply treatmentCostsReply
                 ) {
