@@ -53,7 +53,7 @@ class HospitalController implements Initializable {
                     // create HospitalListLine
                     HospitalListLine hospitalListLine = new HospitalListLine(hospitalCostsRequest, null);
                     // add to lvRequestReply
-                    addHospitalListLineToListViewLine(hospitalListLine);
+                    addHospitalListLineToListView(hospitalListLine);
                 }
             };
         } catch (JMSException e) {
@@ -96,7 +96,7 @@ class HospitalController implements Initializable {
      *
      * @param hospitalListLine to be added to lvRequestsReply
      */
-    private void addHospitalListLineToListViewLine(HospitalListLine hospitalListLine) {
+    private void addHospitalListLineToListView(HospitalListLine hospitalListLine) {
         Platform.runLater(() -> {
             this.lvRequestReply.getItems().add(hospitalListLine);
         });
