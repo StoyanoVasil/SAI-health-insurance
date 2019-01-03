@@ -58,12 +58,16 @@ public class BrokerController {
                     JMS_BROKER_CLIENT_QUEUE_NAME
             ) {
                 public void onTreatmentCostsRequestArrived(TreatmentCostsRequest treatmentCostsRequest) {
+                    // create HospitalCostsRequest from the received TreatmentCostsRequest
                     HospitalCostsRequest hospitalCostsRequest = new HospitalCostsRequest(
                             treatmentCostsRequest.getSsn(),
                             treatmentCostsRequest.getTreatmentCode(),
                             treatmentCostsRequest.getAge());
-                    BrokerListLine brokerListLine = new BrokerListLine(hospitalCostsRequest, null);
+                    // map HospitalCostsRequest t
                     hospitalCostsReqToTreatmentCostsReq.put(hospitalCostsRequest, treatmentCostsRequest);
+                    // create BrokerListLine and add to ListView TreatmentCostsRequest
+                    //todo: maybe change BrokerListLine to use TreatmentCostsRequest
+                    BrokerListLine brokerListLine = new BrokerListLine(hospitalCostsRequest, null);
                     addBrokerListLineToListView(brokerListLine);
                     //todo: send to hospital
                 }
