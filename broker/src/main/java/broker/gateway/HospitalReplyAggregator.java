@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * A class responsible for administering the received HospitalCostsReply
  */
-public class HospitalRequestAggregator {
+public class HospitalReplyAggregator {
 
     /**
      * Map the aggregationId to the number of expected replies
@@ -21,7 +21,7 @@ public class HospitalRequestAggregator {
     /**
      * Constructor that initializes both maps
      */
-    public HospitalRequestAggregator() {
+    public HospitalReplyAggregator() {
         this.aggregationIdToNumberExpectedRepliesMap = new HashMap<>();
         this.aggregationIdToReceivedRepliesMap = new HashMap<>();
     }
