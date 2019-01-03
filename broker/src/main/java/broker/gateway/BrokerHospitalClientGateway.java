@@ -77,7 +77,7 @@ public class BrokerHospitalClientGateway {
      * @param hospitalQueueName where the HospitalCostsRequest will be sent
      * @throws JMSException if something goes wrong with JMS
      */
-    public void requestApproxmation(
+    public void requestApproximation(
             HospitalCostsRequest hospitalCostsRequest,
             Integer aggregationId,
             String hospitalQueueName
