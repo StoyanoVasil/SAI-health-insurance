@@ -20,7 +20,7 @@ public class InsuranceClientController implements Initializable {
      * and for this insurance client queue
      */
     private static final String JMS_INSURANCE_CLIENT_QUEUE_NAME = "insurance-client-queue";
-    private static final String JMS_BROKER_CLIENT_QUEUE_NAME = "broker-client-queue";
+    private static final String JMS_BROKER_CLIENT_QUEUE_NAME = "broker-insurance-client-queue";
 
     @FXML
     private ListView<ClientListLine> lvRequestsReplies;
@@ -57,7 +57,9 @@ public class InsuranceClientController implements Initializable {
                         TreatmentCostsReply treatmentCostsReply
                 ) {
                     //todo: implement callback
-                    //lvRequestsReplies.refresh();
+                    ClientListLine clientListLine = findClientListLineByTreatmentCostsRequest(treatmentCostsRequest);
+                    clientListLine.setReply(treatmentCostsReply);
+                    lvRequestsReplies.refresh();
                 }
             };
         } catch (JMSException e) {
@@ -115,5 +117,12 @@ public class InsuranceClientController implements Initializable {
         Platform.runLater(() -> {
             this.lvRequestsReplies.getItems().add(clientListLine);
         });
+    }
+
+    private ClientListLine findClientListLineByTreatmentCostsRequest(TreatmentCostsRequest treatmentCostsRequest) {
+        for(ClientListLine cll : this.lvRequestsReplies.getItems()) {
+            if (treatmentCostsRequest.equals(cll.getRequest())) return cll;
+        }
+        return null;
     }
 }
