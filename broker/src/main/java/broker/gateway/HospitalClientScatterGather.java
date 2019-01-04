@@ -56,7 +56,15 @@ public class HospitalClientScatterGather {
             }
         };
         // initialize HospitalReplyAggregator
-        this.hospitalReplyAggregator = new HospitalReplyAggregator();
+        this.hospitalReplyAggregator = new HospitalReplyAggregator() {
+            public void onAllHospitalCostsRepliesReceived(
+                    HospitalCostsReply hospitalCostsReply, Integer aggregationId) {
+                onHospitalCostsReplyReceived(
+                        aggregationIdToHospitalCostsRequestMap.get(aggregationId),
+                        hospitalCostsReply
+                );
+            }
+        };
         // initialize HospitalRecipientList
         this.hospitalRecipientList = new HospitalRecipientList(this.brokerHospitalClientGateway);
     }
