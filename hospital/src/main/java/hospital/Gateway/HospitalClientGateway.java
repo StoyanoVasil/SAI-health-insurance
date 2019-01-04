@@ -79,7 +79,7 @@ public class HospitalClientGateway {
 
     /**
      * Method that prepares the JMS message, sets all necessary field
-     * (JMSCorrelationID and int property aggregaitonID) and then sends the message
+     * (JMSCorrelationID and int property aggregationID) and then sends the message
      *
      * @param hospitalCostsRequest that is being responded to
      * @param hospitalCostsReply related to the HospitalCostsRequest

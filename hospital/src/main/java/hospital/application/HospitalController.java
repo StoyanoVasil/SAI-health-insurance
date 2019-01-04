@@ -21,7 +21,7 @@ class HospitalController implements Initializable {
     /**
      * Store the queue name for the broker queue
      */
-    private static final String JMS_BROKER_CLIENT_QUEUE_NAME = "broker-client-queue";
+    private static final String JMS_BROKER_CLIENT_QUEUE_NAME = "broker-hospital-client-queue";
 
     @FXML
     private Label lbHospital;
