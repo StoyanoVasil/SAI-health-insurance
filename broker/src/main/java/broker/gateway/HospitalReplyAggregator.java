@@ -62,7 +62,10 @@ public class HospitalReplyAggregator {
             double minPrice = Integer.MAX_VALUE;
             HospitalCostsReply bestHospitalCostsReply = null;
             for(HospitalCostsReply reply : hospitalCostsReplies) {
-                if (minPrice > reply.getPrice()) bestHospitalCostsReply = reply;
+                if (minPrice > reply.getPrice()) {
+                    minPrice = reply.getPrice();
+                    bestHospitalCostsReply = reply;
+                }
             }
             onAllHospitalCostsRepliesReceived(bestHospitalCostsReply, aggregationId);
         }
