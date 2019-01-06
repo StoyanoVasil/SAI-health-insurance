@@ -73,8 +73,7 @@ public class BrokerController {
                     // map HospitalCostsRequest t
                     hospitalCostsReqToTreatmentCostsReq.put(hospitalCostsRequest, treatmentCostsRequest);
                     // create BrokerListLine and add to ListView TreatmentCostsRequest
-                    //todo: maybe change BrokerListLine to use TreatmentCostsRequest
-                    BrokerListLine brokerListLine = new BrokerListLine(hospitalCostsRequest, null);
+                    BrokerListLine brokerListLine = new BrokerListLine(treatmentCostsRequest, null);
                     addBrokerListLineToListView(brokerListLine);
                     try {
                         hospitalClientScatterGather.requestApproximation(hospitalCostsRequest);
@@ -106,8 +105,8 @@ public class BrokerController {
                         e.printStackTrace();
                     }
                     // update ListView
-                    BrokerListLine brokerListLine = findBrokerListLineByHospitalCostsRequest(hospitalCostsRequest);
-                    brokerListLine.setReply(hospitalCostsReply);
+                    BrokerListLine brokerListLine = findBrokerListLineByTreatmentCostsRequest(treatmentCostsRequest);
+                    brokerListLine.setReply(treatmentCostsReply);
                     lvRequestReply.refresh();
                 }
             };
@@ -131,12 +130,12 @@ public class BrokerController {
      * Method that searches for BrokerListLine
      * containing the HospitalCostsRequest given
      *
-     * @param hospitalCostsRequest the search parameter
+     * @param treatmentCostsRequest the search parameter
      * @return BrokerListLine if found, otherwise null
      */
-    private BrokerListLine findBrokerListLineByHospitalCostsRequest(HospitalCostsRequest hospitalCostsRequest) {
+    private BrokerListLine findBrokerListLineByTreatmentCostsRequest(TreatmentCostsRequest treatmentCostsRequest) {
         for(BrokerListLine bll : this.lvRequestReply.getItems()) {
-            if(hospitalCostsRequest.equals(bll.getRequest())) return bll;
+            if(treatmentCostsRequest.equals(bll.getRequest())) return bll;
         }
         return null;
     }

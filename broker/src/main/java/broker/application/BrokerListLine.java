@@ -1,32 +1,32 @@
 package broker.application;
 
 
-import broker.model.hospital.HospitalCostsReply;
-import broker.model.hospital.HospitalCostsRequest;
+import broker.model.client.TreatmentCostsReply;
+import broker.model.client.TreatmentCostsRequest;
 
 public class BrokerListLine {
 
-	private HospitalCostsRequest request;
-	private HospitalCostsReply reply;
+	private TreatmentCostsRequest request;
+	private TreatmentCostsReply reply;
 
-	public BrokerListLine(HospitalCostsRequest request, HospitalCostsReply reply) {
+	public BrokerListLine(TreatmentCostsRequest request, TreatmentCostsReply reply) {
             this.reply = reply;
             this.request = request;
 	}	
 	
-	public HospitalCostsRequest getRequest() {
+	public TreatmentCostsRequest getRequest() {
 		return request;
 	}
 	
-	private void setRequest(HospitalCostsRequest request) {
+	private void setRequest(TreatmentCostsRequest request) {
 		this.request = request;
 	}
 	
-	public HospitalCostsReply getReply() {
+	public TreatmentCostsReply getReply() {
 		return reply;
 	}
 	
-	public void setReply(HospitalCostsReply reply) {
+	public void setReply(TreatmentCostsReply reply) {
 		this.reply = reply;
 	}
 	

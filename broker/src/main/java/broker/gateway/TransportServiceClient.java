@@ -1,9 +1,6 @@
 package broker.gateway;
 
 import org.glassfish.jersey.client.ClientConfig;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
