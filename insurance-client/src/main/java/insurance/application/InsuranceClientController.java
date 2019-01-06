@@ -56,7 +56,6 @@ public class InsuranceClientController implements Initializable {
                         TreatmentCostsRequest treatmentCostsRequest,
                         TreatmentCostsReply treatmentCostsReply
                 ) {
-                    //todo: implement callback
                     ClientListLine clientListLine = findClientListLineByTreatmentCostsRequest(treatmentCostsRequest);
                     clientListLine.setReply(treatmentCostsReply);
                     lvRequestsReplies.refresh();

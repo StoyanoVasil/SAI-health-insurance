@@ -2,6 +2,7 @@ package broker.application;
 
 import broker.gateway.BrokerInsuranceClientGateway;
 import broker.gateway.HospitalClientScatterGather;
+import broker.gateway.TransportServiceClient;
 import broker.model.client.TreatmentCostsReply;
 import broker.model.client.TreatmentCostsRequest;
 import broker.model.hospital.HospitalCostsReply;
@@ -31,10 +32,11 @@ public class BrokerController {
     private static final String JMS_INSURANCE_CLIENT_QUEUE_NAME = "insurance-client-queue";
 
     /**
-     * Declare BrokerInsuranceClientGateway and Scatter-Gather
+     * Declare BrokerInsuranceClientGateway, Scatter-Gather and TransportServiceClient
      */
     private BrokerInsuranceClientGateway brokerInsuranceClientGateway;
     private HospitalClientScatterGather hospitalClientScatterGather;
+    private TransportServiceClient transportServiceClient;
 
     /**
      * Declare mapping to map HospitalCostsRequest to TreatmentCostsRequest
@@ -49,11 +51,12 @@ public class BrokerController {
 
     /**
      * Constructor that initializes all properties and
-     * implementing the callbacks for the gateway and
-     * the scatter-gather
+     * implementing the callbacks for the gateway,
+     * the scatter-gather and transport service client
      */
     public BrokerController() {
         this.hospitalCostsReqToTreatmentCostsReq = new HashMap<>();
+        this.transportServiceClient = new TransportServiceClient();
 
         try {
             // initialize BrokerInsuranceClientGateway
@@ -84,22 +87,25 @@ public class BrokerController {
             //initialize HospitalClientScatterGather and implement callback
             this.hospitalClientScatterGather = new HospitalClientScatterGather(JMS_BROKER_HOSPITAL_CLIENT_QUEUE_NAME) {
                 public void onHospitalCostsReplyReceived(
-                        HospitalCostsRequest hospitalCostsRequest,
-                        HospitalCostsReply hospitalCostsReply) {
+                        HospitalCostsRequest hospitalCostsRequest, HospitalCostsReply hospitalCostsReply) {
+                    // get TreatmentCostsRequest from map
                     TreatmentCostsRequest treatmentCostsRequest =
                             hospitalCostsReqToTreatmentCostsReq.get(hospitalCostsRequest);
-                    //todo: transport service call here
+                    // calculate transport costs and set in TreatmentCostsReply
+                    double transportCosts = calculateTransportPrice(treatmentCostsRequest.getTransportDistance());
                     TreatmentCostsReply treatmentCostsReply = new TreatmentCostsReply(
                             hospitalCostsReply.getPrice(),
-                            0,
+                            transportCosts,
                             hospitalCostsReply.getHospitalName()
                     );
+                    // send the TreatmentCostsRequest and TreatmentCostsReply to the insurance client
                     try {
                         brokerInsuranceClientGateway.replyOnTreatmentCostsRequest(
                                 treatmentCostsRequest,treatmentCostsReply);
                     } catch (JMSException e) {
                         e.printStackTrace();
                     }
+                    // update ListView
                     BrokerListLine brokerListLine = findBrokerListLineByHospitalCostsRequest(hospitalCostsRequest);
                     brokerListLine.setReply(hospitalCostsReply);
                     lvRequestReply.refresh();
@@ -133,5 +139,22 @@ public class BrokerController {
             if(hospitalCostsRequest.equals(bll.getRequest())) return bll;
         }
         return null;
+    }
+
+    /**
+     * Method that gets the price per kilometer from the TransportService and
+     * calculates the transport cost by multiplying the distance by the price
+     * per kilometer. If the distance is 0 or less, the method returns 0 without
+     * making he call to the TransportService.
+     *
+     * @param transportDistance the number of kilometers
+     * @return the calculated transport price as double or 0
+     */
+    private double calculateTransportPrice(Integer transportDistance) {
+        if (transportDistance > 0) {
+            double price = this.transportServiceClient.getTransportPricePerKilometer();
+            return price * transportDistance;
+        }
+        return 0;
     }
 }
