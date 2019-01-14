@@ -6,6 +6,10 @@ import net.sourceforge.jeval.Evaluator;
 
 import javax.jms.JMSException;
 
+/**
+ * A class responsible for evaluating to which hospitals
+ * a HospitalCostsRequest should be sent.
+ */
 public class HospitalRecipientList {
 
     /**
