@@ -14,6 +14,11 @@ import java.util.Map;
  * production and consumption of JSM messages
  */
 public class InsuranceClientGateway {
+    /**
+     * Store queue names
+     */
+    private String producerQueueName;
+    private String consumerQueueName;
 
     /**
      * Declare Consumer and Producer to delegate
@@ -43,6 +48,8 @@ public class InsuranceClientGateway {
      */
     public InsuranceClientGateway(String producerQueueName, String consumerQueueName) throws JMSException {
         // initialize all properties
+        this.producerQueueName = producerQueueName;
+        this.consumerQueueName = consumerQueueName;
         this.producer = new Producer(producerQueueName);
         this.consumer = new Consumer(consumerQueueName);
         this.treatmentCostsSerializer = new TreatmentCostsSerializer();
@@ -79,7 +86,7 @@ public class InsuranceClientGateway {
         // serialize the TreatmentCostsRequest to JSON string
         String treatmentJson = this.treatmentCostsSerializer.serializeTreatmentCostsRequest(treatmentCostsRequest);
         // create the message
-        Message message = this.producer.createMessage(treatmentJson);
+        Message message = this.producer.createMessage(treatmentJson, this.consumerQueueName);
         // send the message
         this.producer.sendMessage(message);
         // save necessary information in map

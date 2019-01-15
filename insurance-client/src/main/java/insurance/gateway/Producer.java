@@ -67,8 +67,10 @@ public class Producer {
      * @return Message object containing the message body
      * @throws JMSException if something goes wrong with JMS
      */
-    public Message createMessage(String messageBody) throws JMSException {
-        return this.session.createTextMessage(messageBody);
+    public Message createMessage(String messageBody, String returnQueueName) throws JMSException {
+        Message message = this.session.createTextMessage(messageBody);
+        message.setJMSReplyTo(this.session.createQueue(returnQueueName));
+        return message;
     }
 
     /**

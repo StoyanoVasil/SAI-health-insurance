@@ -13,6 +13,7 @@ import javafx.scene.control.TextField;
 import javax.jms.JMSException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.UUID;
 
 public class InsuranceClientController implements Initializable {
     /**
@@ -51,7 +52,7 @@ public class InsuranceClientController implements Initializable {
         try {
             this.insuranceClientGateway = new InsuranceClientGateway(
                     JMS_BROKER_CLIENT_QUEUE_NAME,
-                    JMS_INSURANCE_CLIENT_QUEUE_NAME) {
+                    UUID.randomUUID().toString()) {
                 public void onTreatmentCostsReplyArrived(
                         TreatmentCostsRequest treatmentCostsRequest,
                         TreatmentCostsReply treatmentCostsReply

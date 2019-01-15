@@ -124,4 +124,8 @@ public class Producer {
     public void sendMessage(Message message, String queueName) throws JMSException {
         this.producer.send(this.session.createQueue(queueName), message);
     }
+
+    public void sendMessage(Message message, Destination destination) throws JMSException {
+        this.producer.send(destination, message);
+    }
 }

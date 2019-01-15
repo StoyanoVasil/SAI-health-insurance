@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 
 import javafx.scene.control.ListView;
 
+import javax.jms.Destination;
 import javax.jms.JMSException;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +40,7 @@ public class BrokerController {
     private TransportServiceClient transportServiceClient;
 
     /**
-     * Declare mapping to map HospitalCostsRequest to TreatmentCostsRequest
+     * Declare mappings to map HospitalCostsRequest to TreatmentCostsRequest
      */
     private Map<HospitalCostsRequest, TreatmentCostsRequest> hospitalCostsReqToTreatmentCostsReq;
 

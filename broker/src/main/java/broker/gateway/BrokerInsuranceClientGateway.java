@@ -3,6 +3,7 @@ package broker.gateway;
 import broker.model.client.TreatmentCostsReply;
 import broker.model.client.TreatmentCostsRequest;
 
+import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.TextMessage;
@@ -32,6 +33,8 @@ public class BrokerInsuranceClientGateway {
      * TreatmentCostsRequest corresponds to a received TreatmentCostsReply
      */
     private Map<TreatmentCostsRequest, String> treatmentCostsRequestToCorrelationMap;
+    private Map<TreatmentCostsRequest, Destination> treatmentCostsRequestDestinationMap;
+
 
     /**
      * Constructor that initializes the consumer, producer, treatmentCostsRequestToCorrelationMap,
@@ -44,9 +47,10 @@ public class BrokerInsuranceClientGateway {
     public BrokerInsuranceClientGateway(String producerQueueName, String consumerQueueName) throws JMSException {
         // initialize all properties
         this.consumer = new Consumer(consumerQueueName);
-        this.producer = new Producer(producerQueueName);
+        this.producer = new Producer();
         this.treatmentCostsSerializer = new TreatmentCostsSerializer();
         this.treatmentCostsRequestToCorrelationMap = new HashMap<>();
+        this.treatmentCostsRequestDestinationMap = new HashMap<>();
 
         /*
           Event listener that receives the JMS message, deserializes the body to TreatmentCostsReply,
@@ -64,6 +68,7 @@ public class BrokerInsuranceClientGateway {
                         treatmentCostsRequest,
                         msg.getJMSMessageID()
                 );
+                this.treatmentCostsRequestDestinationMap.put(treatmentCostsRequest, message.getJMSReplyTo());
                 // push the received TreatmentCostsRequest
                 onTreatmentCostsRequestArrived(treatmentCostsRequest);
             } catch (JMSException e) { e.printStackTrace(); }
@@ -88,10 +93,11 @@ public class BrokerInsuranceClientGateway {
         Message message = this.producer.createMessage(treatmentCostsReplyJSON);
         // get necessary information from maps
         String correlationId = this.treatmentCostsRequestToCorrelationMap.get(treatmentCostsRequest);
+        Destination returnDestination = this.treatmentCostsRequestDestinationMap.get(treatmentCostsRequest);
         // include necessary information in message
         message.setJMSCorrelationID(correlationId);
         // sendMessage the message
-        this.producer.sendMessage(message);
+        this.producer.sendMessage(message, returnDestination);
     }
 
     /**
